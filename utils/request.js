@@ -3,7 +3,7 @@ import config from "./config";
 function request(options) {
   return new Promise((resolve, reject) => {
     wx.request({
-      url: config.mobilehost + options.url,
+      url: config.host + options.url,
       data: options.data ? options.data : {},
       method: options.method ? options.method : "GET",
       header: {

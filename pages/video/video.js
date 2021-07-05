@@ -1,3 +1,4 @@
+let isChange = false;
 import request from "../../utils/request";
 // pages/video/video.js
 Page({
@@ -46,6 +47,8 @@ Page({
   },
   //点击切换导航
   changeNav(e) {
+    isChange = true;
+    this.videoContext && this.videoContext.pause();
     let navId = e.currentTarget.id;
     this.setData({
       navId: navId >>> 0,
@@ -86,7 +89,6 @@ Page({
   //点击播放/继续播放的回调
   handlePlay(e) {
     let vid = e.currentTarget.id;
-    console.log(1);
     //关闭上一个视频的实例
     // this.vid !== vid && this.videoContext && this.videoContext.stop();
     //创建video控制的实例
@@ -96,11 +98,13 @@ Page({
     let videoItem = videoUpdateTime.find((item) => item.vid === vid);
     if (videoItem) {
       this.videoContext.seek(videoItem.currentTime);
+    }
+    if (!isChange) {
       this.videoContext.play();
     }
-    this.videoContext.play();
   },
   handleImage(e) {
+    isChange = false;
     //保存点击图片相对应的视频的vid
     this.setData({
       videoId: e.currentTarget.id,
@@ -146,9 +150,8 @@ Page({
     //发请求获取新的视频列表数据
     this.getVideoList(this.data.navId);
   },
-  //自定义上拉触底的回调
+  //自定义下拉触底的回调
   handleToLower() {
-    console.log("触底事件");
     let newVideoList = [
       {
         type: 1,
@@ -1472,11 +1475,11 @@ Page({
       videoList,
     });
   },
-  toSearch(){
+  toSearch() {
     wx.navigateTo({
-      url:'/pages/search/search'
-    })
-  },  
+      url: "/pages/search/search",
+    });
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
